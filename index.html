@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>气象预测雷达图</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            font-family: 'Microsoft YaHei', sans-serif;
+        }
+        #chart-container {
+            width: 100%;
+            height: 100vh;
+            min-height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart-container"></div>
+    
+    <script>
+        // 初始化ECharts实例
+        const chartDom = document.getElementById('chart-container');
+        const myChart = echarts.init(chartDom);
+        
+        // ECharts配置选项
+        const option = {
+            title: {
+                text: '',
+                subtext: '',
+                left: 'center',
+                textStyle: {
+                    color: '#333',
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    fontFamily: 'Microsoft YaHei, sans-serif'
+                },
+                subtextStyle: {
+                    color: '#666',
+                    fontSize: 14,
+                    fontFamily: 'Microsoft YaHei, sans-serif'
+                }
+            },
+            polar: {
+                center: ['52%', '50%'],
+                radius: [30, '80%']
+            },
+            angleAxis: {
+                max: 15,
+                startAngle: 75,
+                axisLine: {
+                    show: true,
+                    lineStyle: {
+                        color: 'rgba(247, 155, 123, 0.6)'
+                    }
+                },
+                axisTick: {
+                    show: true,
+                    lineStyle: {
+                        color: '#F79B7B'
+                    },
+                    length: 4
+                },
+                axisLabel: {
+                    show: true,
+                    color: '#D95C2E',
+                    fontSize: 11,
+                    fontWeight: 500,
+                    fontFamily: 'Microsoft YaHei, sans-serif',
+                    margin: 8
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(247, 155, 123, 0.15)',
+                        type: 'dashed'
+                    }
+                }
+            },
+            radiusAxis: {
+                type: 'category',
+                data: ['月', '季节', '暴雨', '强对流'],
+                axisLine: {
+                    show: false
+                },
+                axisTick: {
+                    show: false
+                },
+                axisLabel: {
+                    show: false
+                }
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: function (params) {
+                    const dataMap = {
+                        强对流预警时间提前: '+13%',
+                        暴雨预报准确率: '+10%',
+                        季节气候预测水平: '+5.1%',
+                        月气候预测水平: '+2.3%'
+                    };
+                    return `
+                        <div style="font-weight:bold;color:#D95C2E;margin-bottom:5px;">
+                            ${params.name}
+                        </div>
+                        <div>
+                            提升幅度: <span style="font-weight:bold;color:#D95C2E;">
+                                ${dataMap[params.name]}
+                            </span>
+                        </div>
+                    `;
+                },
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                borderColor: '#F79B7B',
+                borderWidth: 1,
+                textStyle: { color: '#333' }
+            },
+            series: {
+                type: 'bar',
+                data: [
+                    {
+                        name: '月气候预测水平',
+                        value: 2.3,
+                        itemStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    { offset: 0, color: '#FEF2EC' },
+                                    { offset: 1, color: '#FDD9C8' }
+                                ]
+                            },
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    },
+                    {
+                        name: '季节气候预测水平',
+                        value: 5.1,
+                        itemStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    { offset: 0, color: '#FDD9C8' },
+                                    { offset: 1, color: '#FBC0A4' }
+                                ]
+                            },
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    },
+                    {
+                        name: '暴雨预报准确率',
+                        value: 10,
+                        itemStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    { offset: 0, color: '#FBC0A4' },
+                                    { offset: 1, color: '#F9A780' }
+                                ]
+                            },
+                            borderRadius: [4, 4, 0, 0]
+                        }
+                    },
+                    {
+                        name: '强对流预警时间提前',
+                        value: 13,
+                        itemStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 1,
+                                y2: 0,
+                                colorStops: [
+                                    { offset: 0, color: '#F9A780' },
+                                    { offset: 1, color: '#F79B7B' }
+                                ]
+                            },
+                                borderRadius: [4, 4, 0, 0]
+                        }
+                    }
+                ],
+                coordinateSystem: 'polar',
+                label: {
+                    show: true,
+                    position: 'middle',
+                    formatter: '{c}%',
+                    color: '#fff',
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                    textShadowBlur: 3
+                },
+                roundCap: true,
+                barWidth: '65%',
+                itemStyle: {
+                    shadowColor: 'rgba(247, 155, 123, 0.3)',
+                    shadowBlur: 8,
+                    shadowOffsetY: 3
+                },
+                emphasis: {
+                    itemStyle: {
+                        shadowColor: 'rgba(247, 155, 123, 0.5)',
+                        shadowBlur: 12,
+                        shadowOffsetY: 5
+                    }
+                }
+            },
+            graphic: {
+                type: 'group',
+                left: '6%',
+                top: 'center',
+                children: [
+                    {
+                        type: 'group',
+                        left: 0,
+                        top: -65,
+                        children: [
+                            {
+                                type: 'rect',
+                                left: 0,
+                                top: 4,
+                                shape: { width: 16, height: 16, r: 3 },
+                                style: {
+                                    fill: {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 1,
+                                        y2: 0,
+                                        colorStops: [
+                                            { offset: 0, color: '#F9A780' },
+                                            { offset: 1, color: '#F79B7B' }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                type: 'text',
+                                left: 25,
+                                top: 0,
+                                style: {
+                                    text: '强对流预警时间',
+                                    fill: '#333',
+                                    fontSize: 14,
+                                    fontWeight: 500,
+                                    fontFamily: 'Microsoft YaHei'
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: 'group',
+                        left: 0,
+                        top: -22,
+                        children: [
+                            {
+                                type: 'rect',
+                                left: 0,
+                                top: 4,
+                                shape: { width: 16, height: 16, r: 3 },
+                                style: {
+                                    fill: {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 1,
+                                        y2: 0,
+                                        colorStops: [
+                                            { offset: 0, color: '#FBC0A4' },
+                                            { offset: 1, color: '#F9A780' }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                type: 'text',
+                                left: 25,
+                                top: 0,
+                                style: {
+                                    text: '暴雨预报准确率',
+                                    fill: '#333',
+                                    fontSize: 14,
+                                    fontWeight: 500,
+                                    fontFamily: 'Microsoft YaHei'
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: 'group',
+                        left: 0,
+                        top: 21,
+                        children: [
+                            {
+                                type: 'rect',
+                                left: 0,
+                                top: 4,
+                                shape: { width: 16, height: 16, r: 3 },
+                                style: {
+                                    fill: {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 1,
+                                        y2: 0,
+                                        colorStops: [
+                                            { offset: 0, color: '#FDD9C8' },
+                                            { offset: 1, color: '#FBC0A4' }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                type: 'text',
+                                left: 25,
+                                top: 0,
+                                style: {
+                                    text: '季节气候预测水平',
+                                    fill: '#333',
+                                    fontSize: 14,
+                                    fontWeight: 500,
+                                    fontFamily: 'Microsoft YaHei'
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        type: 'group',
+                        left: 0,
+                        top: 64,
+                        children: [
+                            {
+                                type: 'rect',
+                                left: 0,
+                                top: 4,
+                                shape: { width: 16, height: 16, r: 3 },
+                                style: {
+                                    fill: {
+                                        type: 'linear',
+                                        x: 0,
+                                        y: 0,
+                                        x2: 1,
+                                        y2: 0,
+                                        colorStops: [
+                                            { offset: 0, color: '#FEF2EC' },
+                                            { offset: 1, color: '#FDD9C8' }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
+                                type: 'text',
+                                left: 25,
+                                top: 0,
+                                style: {
+                                    text: '月气候预测水平',
+                                    fill: '#333',
+                                    fontSize: 14,
+                                    fontWeight: 500,
+                                    fontFamily: 'Microsoft YaHei'
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // 设置配置项并渲染图表
+        myChart.setOption(option);
+
+        // 响应窗口大小变化
+        window.addEventListener('resize', function() {
+            myChart.resize();
+        });
+    </script>
+</body>
+</html>
